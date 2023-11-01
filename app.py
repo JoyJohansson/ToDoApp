@@ -18,7 +18,7 @@ def find_task_by_id(task_id):
             return task
     return None
 
-#`GET /tasks` Hämtar alla tasks. För VG: lägg till en parameter `completed` 
+# 1. `GET /tasks` Hämtar alla tasks. För VG: lägg till en parameter `completed` 
 # som kan filtrera på färdiga eller ofärdiga tasks.
 @app.route('/tasks', methods=['GET'])
 def get_all_tasks():
@@ -40,6 +40,7 @@ def get_all_tasks():
     else:
         return "Felaktig parameter för 'completed'. Använd 'true' eller 'false' för att filtrera färdiga eller ofärdiga uppgifter.", 400
 
+# 2. `POST /tasks` Lägger till en ny task. Tasken är ofärdig när den först läggs till.
 @app.route('/tasks', methods=['POST'])
 def add_task():
     data = request.get_json()
@@ -62,7 +63,7 @@ def add_task():
     response = json.dumps(new_task)
     return response, 201, {'Content-Type': 'application/json'}
 
-
+# 3. `GET /tasks/{task_id}` Hämtar en task med ett specifikt id.
 @app.route('/tasks/<int:task_id>', methods=['GET'])
 def get_task(task_id):
     task = find_task_by_id(task_id)
@@ -71,6 +72,7 @@ def get_task(task_id):
         return response, 200, {'Content-Type': 'application/json'}
     return "Uppgiften hittades inte.", 418 # I´m a tea pot (404)
 
+# 4. `DELETE /tasks/{task_id}` Tar bort en task med ett specifikt id.
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
     task = find_task_by_id(task_id)
@@ -84,7 +86,7 @@ def delete_task(task_id):
         return "Uppgiften har tagits bort.", 202
     return "Uppgiften hittades inte.", 418 # I´m a tea pot (404)
 
-#`PUT /tasks/{task_id}` Uppdaterar en task med ett specifikt id.
+# 5. `PUT /tasks/{task_id}` Uppdaterar en task med ett specifikt id.
 @app.route("/tasks/<task_id>", methods=["PUT"])
 def update(task_id):
     tasks = get_tasks()
@@ -100,7 +102,7 @@ def update(task_id):
         
         
 
-#`PUT /tasks/{task_id}/complete` Markerar en task som färdig.
+# 6. `PUT /tasks/{task_id}/complete` Markerar en task som färdig.
 @app.route("/tasks/<task_id>/complete", methods=["PUT"])
 def mark_complete(task_id):
     tasks = get_tasks()
@@ -114,7 +116,7 @@ def mark_complete(task_id):
 
 
 
-#`GET /tasks/categories/` Hämtar alla olika kategorier.
+# 7. `GET /tasks/categories/` Hämtar alla olika kategorier.
 @app.route("/tasks/categories/", methods=["GET"])
 def categories():
     tasks = get_tasks()
@@ -126,7 +128,7 @@ def categories():
     return json.dumps(categories)
 
 
-#`GET /tasks/categories/{category_name}` Hämtar alla tasks från en specifik kategori.
+# 8. `GET /tasks/categories/{category_name}` Hämtar alla tasks från en specifik kategori.
 @app.route("/tasks/categories/<category_name>", methods=["GET"])
 def by_category(category_name):
     tasks = get_tasks()
