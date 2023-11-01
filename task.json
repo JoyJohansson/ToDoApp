@@ -1,6 +1,3 @@
-{
-    "id": 123,
-    "description": "Buy milk, eggs and bread",
-    "category": "Chores",
-    "status": "pending"
-}
+[{"id": 123, "description": "Buy milk, eggs and bread", "category": "Chores", "status": "pending"}, 
+{"id": 124, "description": "test api", "category": "Chores", "status": "complete"},
+{"id": 125, "description": "test api", "category": "funTimes", "status": "complete"}]
