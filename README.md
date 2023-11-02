@@ -42,5 +42,5 @@ Du ska göra en frontend med hjälp av en template i Flask. Från den här front
 - Alla implementerade endpoints ger användarvänliga svar ifall man förser dem med felaktig information. Om du exempelvis använder `POST /tasks` och skickar med en task i fel format får du ett felmeddelande med hjälpsam text. En task i ett felaktigt format läggs då inte heller till.
 - Alla endpoints har relevanta enhetstest.
 - Testningen modifierar inte filen `tasks.json`
-- `DELETE /tasks/{task_id}` kräver auktorisering via förslagsvis en token. 
+- `DELETE /tasks/{task_id}` kräver auktorisering via förslagsvis en token.
 - Man kan lägga till en ny task via Frontenden.

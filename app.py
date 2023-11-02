@@ -1,5 +1,4 @@
 import json
-from urllib import response
 from flask import Flask, request, jsonify, make_response
 
 app = Flask(__name__)
@@ -69,13 +68,6 @@ def get_task(task_id):
         return response, 200, {'Content-Type': 'application/json'}
     return "Uppgiften hittades inte.", 418 # I´m a tea pot (404)
 
-
-
-
-
-
-
-
 SECRET_TOKEN = "my_secret_token"
 
 def authenticate_token():
@@ -109,21 +101,7 @@ def delete_task(task_id):
         return make_response(jsonify({"message": "Uppgiften har tagits bort."}), 202)
     return make_response(jsonify({"message": "Uppgiften hittades inte."}), 404)
 
-"""
-# 4. `DELETE /tasks/{task_id}` Tar bort en task med ett specifikt id.
-@app.route('/tasks/<int:task_id>', methods=['DELETE'])
-def delete_task(task_id):
-    task = find_task_by_id(task_id)
-    if task:
-        tasks = get_tasks()
-        tasks.remove(task)
 
-        with open("task.json", "w", encoding="utf-8") as f:
-            json.dump(tasks, f)
-
-        return "Uppgiften har tagits bort.", 202
-    return "Uppgiften hittades inte.", 418 # I´m a tea pot (404)
-"""
 # 5. `PUT /tasks/{task_id}` Uppdaterar en task med ett specifikt id.
 @app.route("/tasks/<task_id>", methods=["PUT"])
 def update(task_id):
@@ -138,8 +116,7 @@ def update(task_id):
             return json.dumps(c)
     return json.dumps({"errorcode" : "404", "message" : "task not found"})
         
-        
-
+    
 # 6. `PUT /tasks/{task_id}/complete` Markerar en task som färdig.
 @app.route("/tasks/<task_id>/complete", methods=["PUT"])
 def mark_complete(task_id):
@@ -151,6 +128,7 @@ def mark_complete(task_id):
             with open("task.json", "w", encoding="utf-8") as f:
                 json.dump(tasks, f)
             return json.dumps({"message":"Your task is now marked as completed"})
+
 
 # 7. `GET /tasks/categories/` Hämtar alla olika kategorier.
 @app.route("/tasks/categories/", methods=["GET"])
