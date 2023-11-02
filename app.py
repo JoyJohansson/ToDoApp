@@ -1,14 +1,11 @@
 import json
 from urllib import response
-from flask import Flask, request
+from flask import Flask, request, jsonify, make_response
 
 app = Flask(__name__)
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
 def get_tasks():
-    with open("task.json") as f:
+    with open("./ToDoApp/task.json") as f:
         return json.load(f)
 
 def find_task_by_id(task_id):
@@ -72,6 +69,47 @@ def get_task(task_id):
         return response, 200, {'Content-Type': 'application/json'}
     return "Uppgiften hittades inte.", 418 # I´m a tea pot (404)
 
+
+
+
+
+
+
+
+SECRET_TOKEN = "my_secret_token"
+
+def authenticate_token():
+    token = request.headers.get("Authorization")
+
+    if token == f"Bearer {SECRET_TOKEN}":
+        return True
+
+    return False
+
+def check_authentication():
+    if request.endpoint != "authenticate":
+        if not authenticate_token():
+            return make_response(jsonify({"message": "Autentisering misslyckades."}), 401)
+
+
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    print("HEllo")
+    if not authenticate_token():
+            return make_response(jsonify({"message": "Autentisering misslyckades."}), 401)
+    tasks = get_tasks()
+    task = next((t for t in tasks if t['id'] == task_id), None)
+
+    if task:
+        tasks.remove(task)
+
+        with open("task.json", "w", encoding="utf-8") as f:
+            json.dump(tasks, f, indent=4)
+
+        return make_response(jsonify({"message": "Uppgiften har tagits bort."}), 202)
+    return make_response(jsonify({"message": "Uppgiften hittades inte."}), 404)
+
+"""
 # 4. `DELETE /tasks/{task_id}` Tar bort en task med ett specifikt id.
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
@@ -85,7 +123,7 @@ def delete_task(task_id):
 
         return "Uppgiften har tagits bort.", 202
     return "Uppgiften hittades inte.", 418 # I´m a tea pot (404)
-
+"""
 # 5. `PUT /tasks/{task_id}` Uppdaterar en task med ett specifikt id.
 @app.route("/tasks/<task_id>", methods=["PUT"])
 def update(task_id):
@@ -114,8 +152,6 @@ def mark_complete(task_id):
                 json.dump(tasks, f)
             return json.dumps({"message":"Your task is now marked as completed"})
 
-
-
 # 7. `GET /tasks/categories/` Hämtar alla olika kategorier.
 @app.route("/tasks/categories/", methods=["GET"])
 def categories():
@@ -128,7 +164,7 @@ def categories():
     return json.dumps(categories)
 
 
-# 8. `GET /tasks/categories/{category_name}` Hämtar alla tasks från en specifik kategori.
+# 8.`GET /tasks/categories/{category_name}` Hämtar alla tasks från en specifik kategori.
 @app.route("/tasks/categories/<category_name>", methods=["GET"])
 def by_category(category_name):
     tasks = get_tasks()
@@ -138,3 +174,6 @@ def by_category(category_name):
             tasks_by_category.append(c)
     
     return json.dumps(tasks)
+
+if __name__ == '__main__':
+    app.run(debug=True)
