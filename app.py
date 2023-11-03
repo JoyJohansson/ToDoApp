@@ -3,9 +3,15 @@ from flask import Flask, request, jsonify, make_response
 
 app = Flask(__name__)
 
+FILE_NAME = "task.json"
+
 def get_tasks():
-    with open("task.json") as f:
+    with open(FILE_NAME) as f:
         return json.load(f)
+    
+def save_tasks(tasks):
+    with open(FILE_NAME, "w", encoding="utf-8") as f:
+        json.dump(tasks, f)
 
 def find_task_by_id(task_id):
     tasks = get_tasks()
@@ -50,11 +56,10 @@ def add_task():
         'status': 'pending'
     }
 
-    tasks = get_task()
+    tasks = get_tasks()
     tasks.append(new_task)
 
-    with open("task.json", "w", encoding="utf-8") as f:
-        json.dump(tasks, f)
+    save_tasks(tasks)
 
     response = json.dumps(new_task)
     return response, 201, {'Content-Type': 'application/json'}
@@ -95,8 +100,7 @@ def delete_task(task_id):
     if task:
         tasks.remove(task)
 
-        with open("task.json", "w", encoding="utf-8") as f:
-            json.dump(tasks, f, indent=4)
+        save_tasks(tasks)
 
         return make_response(jsonify({"message": "Uppgiften har tagits bort."}), 202)
     return make_response(jsonify({"message": "Uppgiften hittades inte."}), 404)
@@ -111,8 +115,7 @@ def update(task_id):
         print(c["id"])
         if c["id"] == int(task_id):
             c.update(request.json)
-            with open("task.json", "w", encoding="utf-8") as f:
-                json.dump(tasks, f)
+            save_tasks(tasks)
             return json.dumps(c)
     return json.dumps({"errorcode" : "404", "message" : "task not found"})
         
@@ -125,8 +128,7 @@ def mark_complete(task_id):
     for c in tasks:
         if c["id"] == int(task_id):
             c["status"] = "complete"
-            with open("task.json", "w", encoding="utf-8") as f:
-                json.dump(tasks, f)
+            save_tasks(tasks)
             return json.dumps({"message":"Your task is now marked as completed"})
 
 
@@ -151,7 +153,7 @@ def by_category(category_name):
         if c["category"] == str(category_name):
             tasks_by_category.append(c)
     
-    return json.dumps(tasks)
+    return json.dumps(tasks_by_category)
 
 if __name__ == '__main__':
     app.run(debug=True)
