@@ -13,5 +13,16 @@
         <li>ID: {{ task.id }}, Description: {{ task.description }}, Category: {{ task.category }}, Status: {{ task.status }}</li>
         {% endfor %}
     </ul>
+
+    <h2>Lägg till ny task</h2>
+    <form action="/add_task" method="post">
+        <label for="description">Beskrivning:</label>
+        <input type="text" id="description" name="description" required>
+        <br>
+        <label for="category">Kategori:</label>
+        <input type="text" id="category" name="category" required>
+        <br>
+        <input type="submit" value="Lägg till uppgift">
+    </form>
 </body>
 </html>

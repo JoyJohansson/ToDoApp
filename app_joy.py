@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, jsonify, make_response, render_template
+from flask import Flask, request, jsonify, make_response, render_template, redirect
 
 app = Flask(__name__)
 
@@ -63,6 +63,30 @@ def add_task():
     with open("./ToDoApp/task.json", "w", encoding="utf-8") as f:
         json.dump(tasks, f, indent=4)
     return jsonify(new_task), 201
+
+
+# För VG: Lägga till en ny task via Frontend.
+@app.route('/add_task', methods=['POST'])
+def add_new_task():
+    data = request.form
+    description = data.get('description')
+    category = data.get('category')
+
+    if description and category:
+        tasks = get_tasks()
+        new_task_id = max(task['id'] for task in tasks) + 1 if tasks else 1
+        new_task = {
+            'id': new_task_id,
+            'description': description,
+            'category': category,
+            'status': 'pending'
+        }
+        tasks.append(new_task)
+
+        with open("tasks.json", "w") as f:
+            json.dump(tasks, f, indent=4)
+
+    return redirect('/tasks')
 
 
 # 3. `GET /tasks/{task_id}` Hämtar en task med ett specifikt id.
