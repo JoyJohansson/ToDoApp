@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task List</title>
+    <style>
+        /* Lägg till lite grundläggande CSS-stilar här om du vill. */
+    </style>
+</head>
+<body>
+    <h1>Task List</h1>
+    <ul>
+        {% for task in tasks %}
+        <li>ID: {{ task.id }}, Description: {{ task.description }}, Category: {{ task.category }}, Status: {{ task.status }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

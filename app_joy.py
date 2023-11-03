@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, render_template
 
 app = Flask(__name__)
 
@@ -19,6 +19,7 @@ def find_task_by_id(task_id):
 @app.route('/tasks', methods=['GET'])
 def get_all_tasks():
     tasks = get_tasks()
+    render_template('tasks.html', tasks=tasks)
 
     completed_param = request.args.get('completed')
 
@@ -35,6 +36,7 @@ def get_all_tasks():
         return response, 200, {'Content-Type': 'application/json'}
     else:
         return "Felaktig parameter för 'completed'. Använd 'true' eller 'false' för att filtrera färdiga eller ofärdiga uppgifter.", 400
+        
 
 # 2. `POST /tasks` Lägger till en ny task. Tasken är ofärdig när den först läggs till.
 @app.route('/tasks', methods=['POST'])
