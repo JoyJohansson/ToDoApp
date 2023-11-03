@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, make_response
 app = Flask(__name__)
 
 def get_tasks():
-    with open("./ToDoApp/task.json") as f:
+    with open("task.json") as f:
         return json.load(f)
 
 def find_task_by_id(task_id):
