@@ -136,7 +136,6 @@ def delete_task(task_id):
 
     if task:
         tasks.remove(task)
-
         save_tasks(tasks)
 
         return jsonify({"message": "Uppgiften har tagits bort."}), 202
@@ -168,8 +167,7 @@ def mark_complete(task_id):
     for task in tasks:
         if task['id'] == task_id:
             task["status"] = "completed"
-            with open("./ToDoApp/task.json", "w", encoding="utf-8") as f:
-                json.dump(tasks, f, indent=4)
+            save_tasks(tasks)
             return jsonify({"message": "Din uppgift är nu markerad som avslutad."})
 
 
