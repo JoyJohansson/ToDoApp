@@ -8,7 +8,8 @@ FILE_NAME = "task.json"
 
 @app.route("/")
 def index():
-    return render_template("tasks.html", title="Joys och Johannas ToDoList") #Jag kan skicka med olika typer av variabler i min render_template
+    tasks = get_tasks()
+    return render_template("tasks.html", tasks=tasks, title="Joys och Johannas ToDoList") #Jag kan skicka med olika typer av variabler i min render_template
 
 
 def get_tasks():

@@ -6,13 +6,15 @@
         /* Lägg till lite grundläggande CSS-stilar här. */
     </style>
 </head>
-<body>
+<body>  
     <h1>Task List</h1>
+    <form action="/tasks", methods="GET">
     <ul>
         {% for task in tasks %}
         <li>ID: {{ task.id }}, Description: {{ task.description }}, Category: {{ task.category }}, Status: {{ task.status }}</li>
         {% endfor %}
     </ul>
+    </form>
 
     <h2>Lägg till ny task</h2>
     <form action="/add_task" method="post">
