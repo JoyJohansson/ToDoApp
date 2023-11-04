@@ -3,8 +3,14 @@ from flask import Flask, request, jsonify, make_response, render_template, redir
 
 app = Flask(__name__)
 
+
+@app.route("/")
+def index():
+    return render_template("tasks.html", title="Joys och Johannas ToDoList") #Jag kan skicka med olika typer av variabler i min render_template
+
+
 def get_tasks():
-    with open("./ToDoApp/task.json") as f:
+    with open("task.json") as f:
         return json.load(f)
 
 def find_task_by_id(task_id):
@@ -60,7 +66,7 @@ def add_task():
     if any(task['id'] == new_task['id'] for task in tasks):
         return jsonify({"message": "En uppgift med samma ID finns redan."}), 400
     tasks.append(new_task)
-    with open("./ToDoApp/task.json", "w", encoding="utf-8") as f:
+    with open("task.json", "w", encoding="utf-8") as f:
         json.dump(tasks, f, indent=4)
     return jsonify(new_task), 201
 
