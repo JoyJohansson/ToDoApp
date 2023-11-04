@@ -1,3 +1,32 @@
-[{"id": 123, "description": "Buy milk, eggs and bread", "category": "Chores", "status": "pending"}, 
-{"id": 124, "description": "test api", "category": "funTimes", "status": "complete"}, 
-{"id": 125, "description": "Buy milk, eggs and bread", "category": "Chores", "status": "complete"}]
+[
+    {
+        "id": 123,
+        "description": "Buy milk, eggs and bread",
+        "category": "Chores",
+        "status": "pending"
+    },
+    {
+        "id": 124,
+        "description": "test api",
+        "category": "Chores",
+        "status": "complete"
+    },
+    {
+        "id": 125,
+        "description": "test api",
+        "category": "funTimes",
+        "status": "complete"
+    },
+    {
+        "id": 126,
+        "description": "test api",
+        "category": "funTimes",
+        "status": "pending"
+    },
+    {
+        "id": 127,
+        "description": "test api",
+        "category": 22,
+        "status": "pending"
+    }
+]
