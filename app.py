@@ -3,6 +3,8 @@ from flask import Flask, request, jsonify, make_response, render_template, redir
 
 app = Flask(__name__)
 
+FILE_NAME = "task.json"
+
 
 @app.route("/")
 def index():
@@ -10,8 +12,12 @@ def index():
 
 
 def get_tasks():
-    with open("task.json") as f:
+    with open(FILE_NAME) as f:
         return json.load(f)
+    
+def save_tasks(tasks):
+    with open(FILE_NAME, "w", encoding="utf-8") as f:
+        json.dump(tasks, f)
 
 def find_task_by_id(task_id):
     tasks = get_tasks()
@@ -66,8 +72,7 @@ def add_task():
     if any(task['id'] == new_task['id'] for task in tasks):
         return jsonify({"message": "En uppgift med samma ID finns redan."}), 400
     tasks.append(new_task)
-    with open("task.json", "w", encoding="utf-8") as f:
-        json.dump(tasks, f, indent=4)
+    save_tasks(tasks, indent=4)
     return jsonify(new_task), 201
 
 
@@ -131,8 +136,9 @@ def delete_task(task_id):
 
     if task:
         tasks.remove(task)
-        with open("./ToDoApp/task.json", "w", encoding="utf-8") as f:
-            json.dump(tasks, f, indent=4)
+
+        save_tasks(tasks)
+
         return jsonify({"message": "Uppgiften har tagits bort."}), 202
     return jsonify({"message": "Uppgiften hittades inte."}), 418 # I´m a tea pot (404)
 
@@ -147,12 +153,12 @@ def update(task_id):
         if task['id'] == task_id:
             data = request.get_json()
             task.update(data)
-            with open("./ToDoApp/task.json", "w", encoding="utf-8") as f:
-                json.dump(tasks, f, indent=4)
+            save_tasks(tasks)
             return jsonify(task)
     return jsonify({"message": "Uppgiften hittades inte."}), 418 # I´m a tea pot (404)
 
-
+        
+    
 # 6. `PUT /tasks/{task_id}/complete` Markerar en task som färdig.
 # För VG: Ge användarvänliga svar ifall man förser dem med felaktig information.
 @app.route("/tasks/<int:task_id>/complete", methods=["PUT"])
