@@ -72,7 +72,7 @@ def add_task():
     if any(task['id'] == new_task['id'] for task in tasks):
         return jsonify({"message": "En uppgift med samma ID finns redan."}), 400
     tasks.append(new_task)
-    save_tasks(tasks, indent=4)
+    save_tasks(tasks)
     return jsonify(new_task), 201
 
 
