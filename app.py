@@ -95,8 +95,7 @@ def add_new_task():
         }
         tasks.append(new_task)
 
-        with open("tasks.json", "w") as f:
-            json.dump(tasks, f, indent=4)
+        save_tasks(tasks)
 
     return redirect('/tasks')
 
