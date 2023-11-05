@@ -1,0 +1,59 @@
+/* Body-stilar */
+body {
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Rubrik 1 (h1) */
+h1 {
+    background-color: #3498db;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Rubrik 2 (h2) */
+h2 {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Listelement (li) */
+li {
+    background-color: #fff;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Etiketter (label) */
+label {
+    display: block;
+    margin: 5px 0;
+}
+
+/* Textinmatningsfält (input[type="text"]) */
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Knapp (input[type="submit"]) */
+input[type="submit"] {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #2980b9;
+}
