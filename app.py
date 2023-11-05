@@ -169,6 +169,7 @@ def mark_complete(task_id):
             task["status"] = "completed"
             save_tasks(tasks)
             return jsonify({"message": "Din uppgift är nu markerad som avslutad."})
+    return jsonify({"message": "Uppgiften hittades inte."}), 418  # I'm a teapot (404) 
 
 
 # 7. `GET /tasks/categories/` Hämtar alla olika kategorier.
