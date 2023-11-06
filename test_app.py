@@ -1,7 +1,5 @@
 import json
-from unittest.mock import patch
 import pytest
-import flask
 from app import add_task, app, by_category, categories, delete_task, find_task_by_id, get_all_tasks, get_task, mark_complete, update
 
 task_list = [{"id": 1, "description": "test task one", "category": "test", "status": "pending"}, 
@@ -68,7 +66,3 @@ def test_by_category(mock_task_list):
         print(task_list)
         print(json.loads(response))
     assert len(json.loads(response)) == 1
-
-
-
-"""
