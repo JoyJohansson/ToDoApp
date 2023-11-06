@@ -174,7 +174,7 @@ def mark_complete(task_id):
 
 # 7. `GET /tasks/categories/` Hämtar alla olika kategorier.
 # För VG: Ge användarvänliga svar ifall man förser dem med felaktig information.
-@app.route("/tasks/categories/", methods=["GET"])
+@app.route("/tasks/categories", methods=["GET"])
 def categories():
     tasks = get_tasks()
     categories = set(task["category"] for task in tasks)
