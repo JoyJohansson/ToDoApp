@@ -97,7 +97,7 @@ def add_new_task():
 
         save_tasks(tasks)
 
-    return redirect('/tasks')
+    return redirect('/')
 
 
 # 3. `GET /tasks/{task_id}` Hämtar en task med ett specifikt id.
