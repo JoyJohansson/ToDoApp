@@ -41,15 +41,12 @@ def get_all_tasks():
 
     if completed_param == 'true':
         completed_tasks = [task for task in tasks if task['status'] == 'completed']
-        response = json.dumps(completed_tasks)
-        return response, 200, {'Content-Type': 'application/json'}
+        return jsonify(completed_tasks), 200
     elif completed_param == 'false':
         incomplete_tasks = [task for task in tasks if task['status'] == 'pending']
-        response = json.dumps(incomplete_tasks)
-        return response, 200, {'Content-Type': 'application/json'}
+        return jsonify(incomplete_tasks), 200
     elif completed_param is None:
-        response = json.dumps(tasks)
-        return response, 200, {'Content-Type': 'application/json'}
+        return jsonify(tasks), 200
     else:
         return "Felaktig parameter för 'completed'. Använd 'true' eller 'false' för att filtrera färdiga eller ofärdiga uppgifter.", 400
         
@@ -178,7 +175,7 @@ def mark_complete(task_id):
 
 # 7. `GET /tasks/categories/` Hämtar alla olika kategorier.
 # För VG: Ge användarvänliga svar ifall man förser dem med felaktig information.
-@app.route("/tasks/categories/", methods=["GET"])
+@app.route("/tasks/categories", methods=["GET"])
 def categories():
     tasks = get_tasks()
     categories = set(task["category"] for task in tasks)
