@@ -161,6 +161,7 @@ def update(task_id):
     
 # 6. `PUT /tasks/{task_id}/complete` Markerar en task som färdig.
 # För VG: Ge användarvänliga svar ifall man förser dem med felaktig information.
+# EGEN TILLÄGG: Kunna markera och avmakera en task som färdig/inte färdig.
 @app.route("/tasks/<int:task_id>/complete", methods=["PUT"])
 def mark_complete(task_id):
     tasks = get_tasks()
