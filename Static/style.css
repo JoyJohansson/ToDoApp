@@ -1,0 +1,101 @@
+/* Body-stilar */
+body {
+    background-color: darkseagreen;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Rubrik 1 (h1) */
+h1 {
+    background-color: darkolivegreen;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Rubrik 2 (h2) */
+h2 {
+    background-color: darkolivegreen;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Listelement (li) */
+li {
+    background-color: darkseagreen;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Etiketter (label) */
+label {
+    display: block;
+    margin: 5px 0;
+}
+
+/* Textinmatningsfält (input[type="text"]) */
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Knapp (input[type="submit"]) */
+input[type="submit"] {
+    background-color: darkolivegreen;
+    color: darkgray;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: lightseagreen;
+}
+
+/* Checkbox-stilar */
+input[type="checkbox"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #63686b;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+input[type="checkbox"]:checked {
+    background-color:transparent;
+}
+
+/* Regel för hela tabellen */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Regel för tabellhuvuden (<th>) och tabelldata (<td>) */
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Regel för tabellhuvuden (<th>) */
+th {
+    background-color: cadetblue;
+}
+
+/* Regel för varannan rad i tabellen */
+tr:nth-child(even) {
+    background-color: cadetblue;
+}
+
+/* Regel för sorterbara tabellhuvuden (<th> med klassen "sortable") */
+th.sortable {
+    cursor: pointer;
+}

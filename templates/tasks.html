@@ -2,19 +2,35 @@
 <html>
 <head>
     <title>Joys och Johannas ToDoApp</title>
-    <style>
-        /* Lägg till lite grundläggande CSS-stilar här. */
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
-<body>  
+<body>
     <h1>Task List</h1>
-    <form action="/tasks", methods="GET">
-    <ul>
-        {% for task in tasks %}
-        <li>ID: {{ task.id }}, Description: {{ task.description }}, Category: {{ task.category }}, Status: {{ task.status }}</li>
-        {% endfor %}
-    </ul>
-    </form>
+    <table>
+        <thead>
+            <tr>
+                <th class="sortable" onclick="sortTable(0)">ID</th>
+                <th class="sortable" onclick="sortTable(1)">Description</th>
+                <th class="sortable" onclick="sortTable(2)">Category</th>
+                <th class="sortable" onclick="sortTable(3)">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>
+                    <input type="checkbox" name="completed" {% if task.status == 'completed' %}checked{% endif %} onclick="toggleCompleted({{ task.id }})">
+                    <span id="task_{{ task.id }}" {% if task.status == 'completed' %}style="text-decoration: line-through;"{% endif %}>
+                        {{ task.description }}
+                    </span>
+                </td>
+                <td>{{ task.category }}</td>
+                <td>{{ task.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <h2>Lägg till ny task</h2>
     <form action="/add_task" method="post">
@@ -26,5 +42,27 @@
         <br>
         <input type="submit" value="Lägg till uppgift">
     </form>
+    <script>
+        function toggleCompleted(taskId) {
+            // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
+            fetch(`/tasks/${taskId}/complete`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // Uppdatera visningen i webbläsaren
+                    const taskElement = document.getElementById(`task_${taskId}`);
+                    if (taskElement.style.textDecoration === 'line-through') {
+                        taskElement.style.textDecoration = 'none';
+                    } else {
+                        taskElement.style.textDecoration = 'line-through';
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
+
