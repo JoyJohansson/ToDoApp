@@ -29,7 +29,7 @@ Du ska göra ett API i Flask som läser data från filen `tasks.json` och modifi
 `GET /tasks/categories/{category_name}` Hämtar alla tasks från en specifik kategori. (Johanna)
 
 ## Frontend
-Du ska göra en frontend med hjälp av en template i Flask. Från den här frontenden ska man kunna se alla tasks. För VG ska det också finnas ett formulär där man kan lägga till en ny task. Frontenden läggs med fördel i roten ("/"). (Johanna)
+Du ska göra en frontend med hjälp av en template i Flask. Från den här frontenden ska man kunna se alla tasks. För VG ska det också finnas ett formulär där man kan lägga till en ny task. Frontenden läggs med fördel i roten ("/").
 
 ## Betygskrav
 
