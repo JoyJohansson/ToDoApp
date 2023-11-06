@@ -1,4 +1,4 @@
-task.json
+/task.json
 __pycache__/
 .pytest_cache
 venv

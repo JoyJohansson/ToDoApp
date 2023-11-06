@@ -95,9 +95,10 @@ def add_new_task():
         }
         tasks.append(new_task)
 
-        save_tasks(tasks)
+        with open("tasks.json", "w") as f:
+            json.dump(tasks, f, indent=4)
 
-    return redirect('/tasks')
+    return redirect('/')
 
 
 # 3. `GET /tasks/{task_id}` Hämtar en task med ett specifikt id.
@@ -166,10 +167,12 @@ def mark_complete(task_id):
 
     for task in tasks:
         if task['id'] == task_id:
-            task["status"] = "completed"
+            if task["status"] == "pending":
+                task["status"] = "completed"
+            else:
+                task["status"] = "pending"
             save_tasks(tasks)
             return jsonify({"message": "Din uppgift är nu markerad som avslutad."})
-    return jsonify({"message": "Uppgiften hittades inte."}), 418  # I'm a teapot (404) 
 
 
 # 7. `GET /tasks/categories/` Hämtar alla olika kategorier.
