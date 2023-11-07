@@ -1,6 +1,6 @@
 import json
 import pytest
-from app import add_task, app, by_category, categories, delete_task, find_task_by_id, get_all_tasks, get_task, mark_complete, update
+from app import app, find_task_by_id
 
 task_list = [{"id": 1, "description": "test task one", "category": "test", "status": "pending"}, 
     {"id": 2, "description": "test task two", "category": "test", "status": "pending"}, 

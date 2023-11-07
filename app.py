@@ -92,8 +92,7 @@ def add_new_task():
         }
         tasks.append(new_task)
 
-        with open("tasks.json", "w") as f:
-            json.dump(tasks, f, indent=4)
+        save_tasks(tasks)
 
     return redirect('/')
 
@@ -104,7 +103,7 @@ def add_new_task():
 def get_task(task_id):
     task = find_task_by_id(task_id)
     if task:
-        return jsonify(task), 200
+        return jsonify(task)
     return jsonify({"message": "Uppgiften hittades inte."}), 418 # I´m a tea pot (404)
 
 
@@ -124,7 +123,7 @@ def check_authentication():
         if not authenticate_token():
             return make_response(jsonify({"message": "Autentisering misslyckades."}), 401)
 
-@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+@app.route('/tasks/<int:task_id>', methods=['DELETE']) #TODO kolla om det går att felhantera att det kommer en sträng istället
 def delete_task(task_id):
     if not authenticate_token():
         return make_response(jsonify({"message": "Autentisering misslyckades."}), 401)
