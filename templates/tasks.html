@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Joys och Johannas ToDoApp</title>
     <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
+
 <body>
     <h1>Task List</h1>
     <table>
@@ -20,8 +22,10 @@
             <tr>
                 <td>{{ task.id }}</td>
                 <td>
-                    <input type="checkbox" name="completed" {% if task.status == 'completed' %}checked{% endif %} onclick="toggleCompleted({{ task.id }})">
-                    <span id="task_{{ task.id }}" {% if task.status == 'completed' %}style="text-decoration: line-through;"{% endif %}>
+                    <input type="checkbox" name="completed" {% if task.status=='completed' %}checked{% endif %}
+                        onclick="toggleCompleted({{ task.id }})">
+                    <span id="task_{{ task.id }}" {% if task.status=='completed'
+                        %}style="text-decoration: line-through;" {% endif %}>
                         {{ task.description }}
                     </span>
                 </td>
@@ -43,26 +47,26 @@
         <input type="submit" value="Lägg till uppgift">
     </form>
     <script>
-        function toggleCompleted(taskId) {
+        async function toggleCompleted(taskId) {
             // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
-            fetch(`/tasks/${taskId}/complete`, {
+            const response = await fetch(`/tasks/${taskId}/complete`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            }).then(response => {
-                if (response.ok) {
-                    // Uppdatera visningen i webbläsaren
-                    const taskElement = document.getElementById(`task_${taskId}`);
-                    if (taskElement.style.textDecoration === 'line-through') {
-                        taskElement.style.textDecoration = 'none';
-                    } else {
-                        taskElement.style.textDecoration = 'line-through';
-                    }
+            })
+            if (response.ok) {
+                // Uppdatera visningen i webbläsaren
+                const taskElement = document.getElementById(`task_${taskId}`);
+                if (taskElement.style.textDecoration === 'line-through') {
+                    taskElement.style.textDecoration = 'none';
+                } else {
+                    taskElement.style.textDecoration = 'line-through';
                 }
-            });
+            }
         }
+
     </script>
 </body>
-</html>
 
+</html>

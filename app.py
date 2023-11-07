@@ -92,8 +92,7 @@ def add_new_task():
         }
         tasks.append(new_task)
 
-        with open("tasks.json", "w") as f:
-            json.dump(tasks, f, indent=4)
+        save_tasks(tasks)
 
     return redirect('/')
 
@@ -115,9 +114,8 @@ def get_task(task_id):
 SECRET_TOKEN = "my_secret_token"
 def authenticate_token():
     token = request.headers.get("Authorization")
-    if token == f"Bearer {SECRET_TOKEN}":
-        return True
-    return False
+    return token == f"Bearer {SECRET_TOKEN}"
+    
 
 def check_authentication():
     if request.endpoint != "authenticate":
