@@ -122,7 +122,7 @@ def check_authentication():
         if not authenticate_token():
             return make_response(jsonify({"message": "Autentisering misslyckades."}), 401)
 
-@app.route('/tasks/<int:task_id>', methods=['DELETE']) #TODO kolla om det går att felhantera att det kommer en sträng istället
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
     if not authenticate_token():
         return make_response(jsonify({"message": "Autentisering misslyckades."}), 401)
@@ -190,7 +190,10 @@ def by_category(category_name):
         return jsonify(tasks_by_category), 200
     return jsonify({"message": "Inga uppgifter hittades i den angivna kategorin."}), 418 # I´m a tea pot (404)
 
-
+#Generisk felhantering
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({"message": "Ogiltig url (Uppgiftid måste vara siffror)."}), 418
 
 if __name__ == '__main__':
     app.run(debug=True)
