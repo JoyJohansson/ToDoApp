@@ -200,6 +200,17 @@ def by_category(category_name):
 def page_not_found(e):
     return jsonify({"message": "Ogiltig url (Uppgiftid måste vara siffror)."}), 418
 
+
+
+
+
+
+
+
+
+#EXTRA TILLÄGG
+
+# Ta bort en task via frontend
 @app.route('/delete/<int:task_id>', methods=['GET'])
 def delete_task_by_id(task_id):
     tasks = get_tasks()
@@ -210,9 +221,7 @@ def delete_task_by_id(task_id):
         return redirect('/')
     return jsonify({"message": "The task was not found."}), 404
 
-
-
-
+# Complete task via frontend
 @app.route('/complete/<int:task_id>', methods=['GET'])
 def complete_task_by_id(task_id):
     tasks = get_tasks()
@@ -224,22 +233,6 @@ def complete_task_by_id(task_id):
             task["status"] = "pending"
         save_tasks(tasks)
         return redirect('/')
-    return jsonify({"message": "The task was not found."}), 404
-
-@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
-def edit_task_by_id(task_id):
-    tasks = get_tasks()
-    task = find_task_by_id(task_id)
-    if task:
-        if request.method == 'GET':
-            return render_template('edit_task.html', task=task)
-        elif request.method == 'POST':
-            data = request.form
-            task['description'] = data.get('description', task['description'])
-            task['category'] = data.get('category', task['category'])
-            task['status'] = data.get('status', task['status'])
-            save_tasks(tasks)
-            return redirect('/')
     return jsonify({"message": "The task was not found."}), 404
 
 @app.route("/complete/<int:task_id>", methods=["PUT"])
@@ -268,6 +261,24 @@ def toggle_complete_task(task_id):
             return jsonify({"status": task["status"]})
 
     return jsonify({"message": "Task not found."}), 404
+
+
+# Edit task via frontend
+@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
+def edit_task_by_id(task_id):
+    tasks = get_tasks()
+    task = find_task_by_id(task_id)
+    if task:
+        if request.method == 'GET':
+            return render_template('edit_task.html', task=task)
+        elif request.method == 'POST':
+            data = request.form
+            task['description'] = data.get('description', task['description'])
+            task['category'] = data.get('category', task['category'])
+            task['status'] = data.get('status', task['status'])
+            save_tasks(tasks)
+            return redirect('/')
+    return jsonify({"message": "The task was not found."}), 404
 
 
 
