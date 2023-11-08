@@ -1,72 +1,101 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <title>Joys och Johannas ToDoList</title>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Joys och Johannas ToDoList</title>
+</head>
+<body>
+    <h1>Welcome to Joys och Johannas ToDoList</h1>
 
-        
-    </head>    
-    <body>
-        <h1>Welcome to Joys och Johannas ToDoList</h1>
-    
-        <h2>All Tasks</h2>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Task</th>
-                <th>Category</th>
-                <th>Status</th>
+    <h2>All Tasks</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Task</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for task in tasks %}
+            <tr {% if task.status == "complete" %}class="complete"{% endif %}>
+                <td>{{ task.id }}</td>
+                <td><span id="task_{{ task.id }}" {% if task.status=='completed' %}style="text-decoration: line-through;" {% endif %}>{{ task.description }}</span></td>
+                <td>{{ task.category }}</td>
+                <td>{{ task.status }}</td>
+                <td>
+                    <a href="/delete/{{ task.id }}"><input type="submit" value="Delete"></a>
+                    <a href="/complete/{{ task.id }}"><input type="submit" value="Complete" onclick="toggleCompleted({{ task.id }})"></a>
+                    <a href="/edit/{{ task.id }}"><input type="submit" value="Edit" onclic="toggleedit({{task.id}})"></a> <!-- Lägg till redigeringsknapp -->
+                </td>
             </tr>
-            {% for task in tasks %}
-                <tr {% if task.status == "complete" %}class="complete"{% endif %}>
-                    <td>{{ task.id }} </td>
-                    <td> <span id="task_{{ task.id }}" {% if task.status=='completed'
-                            %}style="text-decoration: line-through;" {% endif %}>
-                            {{ task.description }} </span>
-                    </td>
-                    <td>{{ task.category }}</td>
-                    <td>{{ task.status }}</td>
-                    <td><a href="/delete/{{ task.id }}"> <input type="submit" value="Delete"> </a></td>
-                    <td><a href="/complete/{{ task.id }}"> <input type="submit" value="complete" onclick="toggleCompleted({{ task.id }})">
-                         </a></td>
-                    <td><a href="/edit/{{ task.id }}"><input type="submit" value="Edit"></a></td>
-                </tr>
-            {% endfor %}
-        </table>
-    
-        <h2>Add a New Task</h2>
-        <form action="/add_task" method="post">
-        <label for="description">Beskrivning:</label>
+        {% endfor %}
+    </table>
+
+    <h2>Add a New Task</h2>
+    <form action="/add_task" method="post">
+        <label for="description">Task:</label>
         <input type="text" id="description" name="description" required>
         <br>
         <label for="category">Kategori:</label>
         <input type="text" id="category" name="category" required>
         <br>
         <input type="submit" value="Lägg till uppgift">
-        </form>
+    </form>
 
-        <script>
-            async function toggleCompleted(taskId) {
-                // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
-                const response = await fetch(`/tasks/${taskId}/complete`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                })
-                if (response.ok) {
-                    // Uppdatera visningen i webbläsaren
-                    const taskElement = document.getElementById(`task_${taskId}`);
-                    if (taskElement.style.textDecoration === 'line-through') {
-                        taskElement.style.textDecoration = 'none';
-                    } else {
-                        taskElement.style.textDecoration = 'line-through';
-                    }
+    <!-- Redigeringsformulär (initialt dolt) -->
+    
+    <form action='/edit/<int:task_id>', methods="GET", "POST" style="display:none">
+    <h2>Edit Task</h2>
+        <label for="editedDescription">Task:</label>
+        <input type="text" id="editedDescription" name="editedDescription" required>
+        <br>
+        <label for="editedCategory">Kategori:</label>
+        <input type="text" id="editedCategory" name="editedCategory" required>
+        <br>
+        <input type="submit" value="Lägg till ändringar">
+    </form>
+
+    <script>
+        async function toggleCompleted(taskId) {
+            // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
+            const response = await fetch(`/tasks/${taskId}/complete`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            if (response.ok) {
+                // Uppdatera visningen i webbläsaren
+                const taskElement = document.getElementById(`task_${taskId}`);
+                if (taskElement.style.textDecoration === 'line-through') {
+                    taskElement.style.textDecoration = 'none';
+                } else {
+                    taskElement.style.textDecoration = 'line-through';
                 }
             }
-    
-        </script>
-    </body>
-    </html>
-    
+        }
+        
+        // Visa redigeringsformuläret när "Edit" knappen klickas
+        const editButtons = document.querySelectorAll("a[href^='/edit/']");
+        editButtons.forEach(button => {
+            button.addEventListener("click", (e) => {
+                e.preventDefault();
+                // Hämta task_ID från länken
+                const taskId = button.getAttribute("href").split('/').pop();
+                // Visa redigeringsformuläret
+                const editForm = document.querySelector("form[action^='/edit/']");
+                editForm.style.display = "block";
+                // Fyll i redigeringsformuläret med befintlig information (om sådan finns)
+                const taskRow = button.closest("tr");
+                const description = taskRow.querySelector("td:nth-child(2) span").textContent;
+                const category = taskRow.querySelector("td:nth-child(3)").textContent;
+                const editedDescriptionInput = editForm.querySelector("#editedDescription");
+                const editedCategoryInput = editForm.querySelector("#editedCategory");
+                editedDescriptionInput.value = description;
+                editedCategoryInput.value = category;
+            });
+        });
+    </script>
+</body>
+</html>

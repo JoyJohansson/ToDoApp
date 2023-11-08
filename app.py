@@ -1,9 +1,6 @@
 import json
 from flask import Flask, request, jsonify, make_response, render_template, redirect, url_for
 
-
-
-
 app = Flask(__name__)
 
 FILE_NAME = "task.json"
@@ -280,6 +277,38 @@ def edit_task_by_id(task_id):
             return redirect('/')
     return jsonify({"message": "The task was not found."}), 404
 
+@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
+def edit_task(task_id):
+    if request.method == 'GET':
+        task = find_task_by_id(task_id)
+        if task:
+            return render_template('edit_task.html', task=task)
+        return jsonify({"message": "Uppgiften hittades inte."}), 404
+    elif request.method == 'POST':
+        data = request.form
+        updated_description = data.get('description')
+        updated_category = data.get('category')
+        updated_status = data.get('status')
+
+        tasks = get_tasks()
+        task = find_task_by_id(task_id)
+
+        if task:
+            task['description'] = updated_description
+            task['category'] = updated_category
+            task['status'] = updated_status
+            save_tasks(tasks)
+            return redirect('/')
+        return jsonify({"message": "Uppgiften hittades inte."}), 404
+
+@app.route('/toggleedit/<int:task_id>', methods=['POST'])
+def toggle_edit(task_id):
+    task = find_task_by_id(task_id)
+    if task:
+        task['edit_mode'] = not task.get('edit_mode', False)
+        save_tasks(get_tasks())
+        return redirect('/')
+    return jsonify({"message": "Uppgiften hittades inte."}), 404
 
 
 if __name__ == '__main__':
