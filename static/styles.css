@@ -1,0 +1,96 @@
+/* Apply styles to the entire page */
+body {
+    background: linear-gradient(to bottom, #222, #000);
+    font-family: 'Press Start 2P', sans-serif;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Style the page title */
+h1 {
+    background-color: #00f;
+    color: #fff;
+    padding: 15px;
+    font-size: 36px;
+}
+
+/* Style the main content container */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #222;
+    border: 2px solid #f00;
+    border-radius: 8px;
+}
+
+/* Style the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #fff;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #00f;
+}
+
+/* Style buttons */
+a.button, button.complete-button {
+    background-color: #00f;
+    color: #fff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+a.button:hover, button.complete-button:hover {
+    background-color: #f00;
+}
+
+/* Style completed rows */
+tr.complete {
+    background-color: #333;
+    color: #0f0;
+}
+
+/* Style the add task form */
+form {
+    margin-top: 20px;
+}
+
+/* Style the input fields */
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin: 4px 0;
+    border: 1px solid #fff;
+    border-radius: 4px;
+}
+
+/* Style the submit button */
+input[type="submit"] {
+    background-color: #00f;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #f00;
+}

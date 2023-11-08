@@ -1,43 +1,42 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <title>Joys och Johannas ToDoList</title>
 
-<head>
-    <title>Joys och Johannas ToDoApp</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
-</head>
-
-<body>
-    <h1>Task List</h1>
-    <table>
-        <thead>
+        
+    </head>    
+    <body>
+        <h1>Welcome to Joys och Johannas ToDoList</h1>
+    
+        <h2>All Tasks</h2>
+        <table>
             <tr>
-                <th class="sortable" onclick="sortTable(0)">ID</th>
-                <th class="sortable" onclick="sortTable(1)">Description</th>
-                <th class="sortable" onclick="sortTable(2)">Category</th>
-                <th class="sortable" onclick="sortTable(3)">Status</th>
+                <th>ID</th>
+                <th>Task</th>
+                <th>Category</th>
+                <th>Status</th>
             </tr>
-        </thead>
-        <tbody>
             {% for task in tasks %}
-            <tr>
-                <td>{{ task.id }}</td>
-                <td>
-                    <input type="checkbox" name="completed" {% if task.status=='completed' %}checked{% endif %}
-                        onclick="toggleCompleted({{ task.id }})">
-                    <span id="task_{{ task.id }}" {% if task.status=='completed'
-                        %}style="text-decoration: line-through;" {% endif %}>
-                        {{ task.description }}
-                    </span>
-                </td>
-                <td>{{ task.category }}</td>
-                <td>{{ task.status }}</td>
-            </tr>
+                <tr {% if task.status == "complete" %}class="complete"{% endif %}>
+                    <td>{{ task.id }} </td>
+                    <td> <span id="task_{{ task.id }}" {% if task.status=='completed'
+                            %}style="text-decoration: line-through;" {% endif %}>
+                            {{ task.description }} </span>
+                    </td>
+                    <td>{{ task.category }}</td>
+                    <td>{{ task.status }}</td>
+                    <td><a href="/delete/{{ task.id }}"> <input type="submit" value="Delete"> </a></td>
+                    <td><a href="/complete/{{ task.id }}"> <input type="submit" value="complete" onclick="toggleCompleted({{ task.id }})">
+                         </a></td>
+                    <td><a href="/edit/{{ task.id }}"><input type="submit" value="Edit"></a></td>
+                </tr>
             {% endfor %}
-        </tbody>
-    </table>
-
-    <h2>Lägg till ny task</h2>
-    <form action="/add_task" method="post">
+        </table>
+    
+        <h2>Add a New Task</h2>
+        <form action="/add_task" method="post">
         <label for="description">Beskrivning:</label>
         <input type="text" id="description" name="description" required>
         <br>
@@ -45,28 +44,29 @@
         <input type="text" id="category" name="category" required>
         <br>
         <input type="submit" value="Lägg till uppgift">
-    </form>
-    <script>
-        async function toggleCompleted(taskId) {
-            // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
-            const response = await fetch(`/tasks/${taskId}/complete`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            if (response.ok) {
-                // Uppdatera visningen i webbläsaren
-                const taskElement = document.getElementById(`task_${taskId}`);
-                if (taskElement.style.textDecoration === 'line-through') {
-                    taskElement.style.textDecoration = 'none';
-                } else {
-                    taskElement.style.textDecoration = 'line-through';
+        </form>
+
+        <script>
+            async function toggleCompleted(taskId) {
+                // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
+                const response = await fetch(`/tasks/${taskId}/complete`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                if (response.ok) {
+                    // Uppdatera visningen i webbläsaren
+                    const taskElement = document.getElementById(`task_${taskId}`);
+                    if (taskElement.style.textDecoration === 'line-through') {
+                        taskElement.style.textDecoration = 'none';
+                    } else {
+                        taskElement.style.textDecoration = 'line-through';
+                    }
                 }
             }
-        }
-
-    </script>
-</body>
-
-</html>
+    
+        </script>
+    </body>
+    </html>
+    
