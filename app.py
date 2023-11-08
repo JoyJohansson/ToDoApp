@@ -1,5 +1,8 @@
 import json
-from flask import Flask, request, jsonify, make_response, render_template, redirect
+from flask import Flask, request, jsonify, make_response, render_template, redirect, url_for
+
+
+
 
 app = Flask(__name__)
 
@@ -34,9 +37,10 @@ def find_task_by_id(task_id):
 @app.route('/tasks', methods=['GET'])
 def get_all_tasks():
     tasks = get_tasks()
-# Frontend visar alla tasks.    
-    render_template('tasks.html', tasks=tasks)
+# Frontend visar alla tasks. 
 
+    render_template('tasks.html', tasks=tasks)
+    
     completed_param = request.args.get('completed')
 
     if completed_param == 'true':
@@ -49,7 +53,7 @@ def get_all_tasks():
         return jsonify(tasks), 200
     else:
         return "Felaktig parameter för 'completed'. Använd 'true' eller 'false' för att filtrera färdiga eller ofärdiga uppgifter.", 400
-        
+      
 
 # 2. `POST /tasks` Lägger till en ny task. Tasken är ofärdig när den först läggs till.
 # För VG: Ge användarvänliga svar ifall man förser dem med felaktig information. 
@@ -121,6 +125,7 @@ def check_authentication():
     if request.endpoint != "authenticate":
         if not authenticate_token():
             return make_response(jsonify({"message": "Autentisering misslyckades."}), 401)
+        
 
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
@@ -194,6 +199,77 @@ def by_category(category_name):
 @app.errorhandler(404)
 def page_not_found(e):
     return jsonify({"message": "Ogiltig url (Uppgiftid måste vara siffror)."}), 418
+
+@app.route('/delete/<int:task_id>', methods=['GET'])
+def delete_task_by_id(task_id):
+    tasks = get_tasks()
+    task = find_task_by_id(task_id)
+    if task:
+        tasks.remove(task)
+        save_tasks(tasks)
+        return redirect('/')
+    return jsonify({"message": "The task was not found."}), 404
+
+
+
+
+@app.route('/complete/<int:task_id>', methods=['GET'])
+def complete_task_by_id(task_id):
+    tasks = get_tasks()
+    task = find_task_by_id(task_id)
+    if task:
+        if task["status"] == "pending":
+            task["status"] = "completed"
+        else:
+            task["status"] = "pending"
+        save_tasks(tasks)
+        return redirect('/')
+    return jsonify({"message": "The task was not found."}), 404
+
+@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
+def edit_task_by_id(task_id):
+    tasks = get_tasks()
+    task = find_task_by_id(task_id)
+    if task:
+        if request.method == 'GET':
+            return render_template('edit_task.html', task=task)
+        elif request.method == 'POST':
+            data = request.form
+            task['description'] = data.get('description', task['description'])
+            task['category'] = data.get('category', task['category'])
+            task['status'] = data.get('status', task['status'])
+            save_tasks(tasks)
+            return redirect('/')
+    return jsonify({"message": "The task was not found."}), 404
+
+@app.route("/complete/<int:task_id>", methods=["PUT"])
+def complete_task(task_id):
+    tasks = get_tasks()
+    
+    for task in tasks:
+        if task["id"] == task_id:
+            task["status"] = "completed"
+            save_tasks(tasks)
+            return jsonify({"message": "Task marked as completed."})
+    
+    return jsonify({"message": "Task not found."}), 404
+
+@app.route("/toggle_complete/<int:task_id>", methods=["PUT"])
+def toggle_complete_task(task_id):
+    tasks = get_tasks()
+
+    for task in tasks:
+        if task["id"] == task_id:
+            if task["status"] == "completed":
+                task["status"] = "pending"
+            else:
+                task["status"] = "completed"
+            save_tasks(tasks)
+            return jsonify({"status": task["status"]})
+
+    return jsonify({"message": "Task not found."}), 404
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
