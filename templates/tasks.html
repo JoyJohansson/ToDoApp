@@ -26,7 +26,7 @@
                 <td>
                     <a href="/delete/{{ task.id }}"><input type="submit" value="Delete"></a>
                     <a href="/complete/{{ task.id }}"><input type="submit" value="Complete" onclick="toggleCompleted({{ task.id }})"></a>
-                    <a href="/edit/{{ task.id }}"><input type="submit" value="Edit" onclic="toggleedit({{task.id}})"></a> <!-- Lägg till redigeringsknapp -->
+                    <a href="/edit/{{ task.id }}"><input type="submit" value="Edit" onclick="toggleedit({{task.id}})"></a> <!-- Lägg till redigeringsknapp -->
                 </td>
             </tr>
         {% endfor %}
@@ -45,7 +45,7 @@
 
     <!-- Redigeringsformulär (initialt dolt) -->
     
-    <form action='/edit/<int:task_id>', methods="POST" style="display:none">
+    <form action='/edit/<int:task_id>', method="post" style="display:none">
     <h2>Edit Task</h2>
         <label for="editedDescription">Task:</label>
         <input type="text" id="editedDescription" name="editedDescription" required>
