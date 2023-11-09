@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
@@ -9,7 +9,7 @@
     <h1>Welcome to Joys och Johannas ToDoList</h1>
 
     <h2>All Tasks</h2>
-    <table>
+    <table> 
         <tr>
             <th>ID</th>
             <th>Task</th>
@@ -18,7 +18,7 @@
             <th>Actions</th>
         </tr>
         {% for task in tasks %}
-            <tr {% if task.status == "complete" %}class="complete"{% endif %}>
+            <tr {% if task.status == "completed" %}class="complete"{% endif %}>
                 <td>{{ task.id }}</td>
                 <td><span id="task_{{ task.id }}" {% if task.status=='completed' %}style="text-decoration: line-through;" {% endif %}>{{ task.description }}</span></td>
                 <td>{{ task.category }}</td>
@@ -26,7 +26,8 @@
                 <td>
                     <a href="/delete/{{ task.id }}"><input type="submit" value="Delete"></a>
                     <a href="/complete/{{ task.id }}"><input type="submit" value="Complete" onclick="toggleCompleted({{ task.id }})"></a>
-                    <a href="/edit/{{ task.id }}"><input type="submit" value="Edit" onclic="toggleedit({{task.id}})"></a> <!-- Lägg till redigeringsknapp -->
+                    <a href="/edit/{{ task.id }}"><input type="submit" value="Edit" onclick="toggleEdit({{ task.id }})"></a> 
+                    <a href="#" onclick="toggleEditForm({{ task.id }})"><input type="button" value="Edit"></a><!-- Lägg till redigeringsknapp -->
                 </td>
             </tr>
         {% endfor %}
@@ -44,9 +45,8 @@
     </form>
 
     <!-- Redigeringsformulär (initialt dolt) -->
-    
-    <form action='/edit/<int:task_id>', methods="GET", "POST" style="display:none">
-    <h2>Edit Task</h2>
+    <form action="{{ url_for('edit_task', task_id=task.id) }}" method="POST" style="display:none">
+        <h2>Edit Task</h2>
         <label for="editedDescription">Task:</label>
         <input type="text" id="editedDescription" name="editedDescription" required>
         <br>
@@ -58,15 +58,13 @@
 
     <script>
         async function toggleCompleted(taskId) {
-            // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
             const response = await fetch(`/tasks/${taskId}/complete`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            })
+            });
             if (response.ok) {
-                // Uppdatera visningen i webbläsaren
                 const taskElement = document.getElementById(`task_${taskId}`);
                 if (taskElement.style.textDecoration === 'line-through') {
                     taskElement.style.textDecoration = 'none';
@@ -75,27 +73,33 @@
                 }
             }
         }
-        
-        // Visa redigeringsformuläret när "Edit" knappen klickas
-        const editButtons = document.querySelectorAll("a[href^='/edit/']");
-        editButtons.forEach(button => {
-            button.addEventListener("click", (e) => {
-                e.preventDefault();
-                // Hämta task_ID från länken
-                const taskId = button.getAttribute("href").split('/').pop();
-                // Visa redigeringsformuläret
-                const editForm = document.querySelector("form[action^='/edit/']");
-                editForm.style.display = "block";
-                // Fyll i redigeringsformuläret med befintlig information (om sådan finns)
-                const taskRow = button.closest("tr");
-                const description = taskRow.querySelector("td:nth-child(2) span").textContent;
-                const category = taskRow.querySelector("td:nth-child(3)").textContent;
-                const editedDescriptionInput = editForm.querySelector("#editedDescription");
-                const editedCategoryInput = editForm.querySelector("#editedCategory");
-                editedDescriptionInput.value = description;
-                editedCategoryInput.value = category;
-            });
-        });
+
+        async function toggleEdit(taskId) {
+             try {
+                 const response = await fetch(`/toggleedit/${taskId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    // Successfully toggled edit mode, you can perform any necessary actions here
+                    console.log('Edit mode toggled successfully');
+                } else {    
+                    // Handle the case where the request was not successful
+                    console.error('Failed to toggle edit mode');
+                }
+            } catch (error) {
+                // Handle any network or other errors
+                console.error('An error occurred while toggling edit mode:', error);
+            }
+        }
+
+        function toggleEditForm(taskId) {
+            const editForm = document.querySelector(`form[action='/edit/${taskId}']`);
+            editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+        }
     </script>
 </body>
 </html>

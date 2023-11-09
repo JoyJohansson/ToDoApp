@@ -1,6 +1,5 @@
 import json
-from flask import Flask, request, jsonify, make_response, render_template, redirect, url_for
-
+from flask import Flask, request, jsonify, make_response, render_template, redirect, session, url_for
 app = Flask(__name__)
 
 FILE_NAME = "task.json"
@@ -13,7 +12,7 @@ def index():
 
 
 def get_tasks():
-    with open(FILE_NAME) as f:
+    with open(FILE_NAME) as f:  
         return json.load(f)
     
 def save_tasks(tasks):
@@ -195,7 +194,7 @@ def by_category(category_name):
 #Generisk felhantering
 @app.errorhandler(404)
 def page_not_found(e):
-    return jsonify({"message": "Ogiltig url (Uppgiftid måste vara siffror)."}), 418
+    return jsonify({"message": "Ogiltig url (Uppgiftid måste vara siffror)."}), 404
 
 
 
@@ -259,7 +258,7 @@ def toggle_complete_task(task_id):
 
     return jsonify({"message": "Task not found."}), 404
 
-
+"""
 # Edit task via frontend
 @app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
 def edit_task_by_id(task_id):
@@ -300,6 +299,8 @@ def edit_task(task_id):
             save_tasks(tasks)
             return redirect('/')
         return jsonify({"message": "Uppgiften hittades inte."}), 404
+    """
+       
 
 @app.route('/toggleedit/<int:task_id>', methods=['POST'])
 def toggle_edit(task_id):
@@ -310,6 +311,43 @@ def toggle_edit(task_id):
         return redirect('/')
     return jsonify({"message": "Uppgiften hittades inte."}), 404
 
+@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
+def edit_task(task_id):
+    task = find_task_by_id(task_id)
+    if task:
+        if request.method == 'GET':
+            edited_description = task['description']
+            edited_category = task['category']
+            return render_template('edit_task.html', task=task, edited_description=edited_description, edited_category=edited_category)
+        elif request.method == 'POST':
+            edited_description = request.form.get('editedDescription')
+            edited_category = request.form.get('editedCategory')
+            task['description'] = edited_description
+            task['category'] = edited_category
+            save_tasks(get_tasks())
+            return redirect('/')
+    return jsonify({"message": "The task was not found."}), 404
+
+
+#app.secret_key = 'your_secret_key'  # Change this to a secure value for production
+# Create an initial list of tasks (in-memory data structure)
+@app.route('/update_task/<int:task_id>', methods=['POST'])
+def update_task(task_id):
+    
+    tasks = [
+    {'id': 1, 'description': 'Task 1', 'category': 'Category A', 'status': 'Incomplete'},
+    {'id': 2, 'description': 'Task 2', 'category': 'Category B', 'status': 'Incomplete'},
+]
+    edited_description = request.form.get('editedDescription')
+    edited_category = request.form.get('editedCategory')
+    
+    for task in tasks:
+        if task['id'] == task_id:
+            task['description'] = edited_description
+            task['category'] = edited_category
+            break
+
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True)

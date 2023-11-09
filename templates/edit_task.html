@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Joys och Johannas ToDoList</title>
+</head>
+<body>
+    <h2>Edit Task</h2>
+    <form action="/update_task/{{ task_id }}" method="POST">
+        <label for="editedDescription">Task:</label>
+        <input type="text" id="editedDescription" name="editedDescription" value="{{ edited_description }}" required>
+        <br>
+        <label for="editedCategory">Category:</label>
+        <input type="text" id="editedCategory" name="editedCategory" value="{{ edited_category }}" required>
+        <br>
+        <input type="submit" value="Save Changes">
+    </form>
+</body>
+</html>
