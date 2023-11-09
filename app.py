@@ -251,7 +251,7 @@ def toggle_complete_task(task_id):
     return jsonify({"message": "Task not found."}), 404
 
 # Edit en task via frontend
-@app.route('/edit/<int:task_id>', methods=['POST'])
+@app.route('/edit_task', methods=['POST'])
 def edit_task(task_id):
     
     data = request.form
