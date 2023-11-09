@@ -45,7 +45,7 @@
 
     <!-- Redigeringsformulär (initialt dolt) -->
     
-    <form action='/edit/<int:task_id>', methods="GET", "POST" style="display:none">
+    <form action='/edit/<int:task_id>', methods="POST" style="display:none">
     <h2>Edit Task</h2>
         <label for="editedDescription">Task:</label>
         <input type="text" id="editedDescription" name="editedDescription" required>
@@ -56,6 +56,9 @@
         <input type="submit" value="Lägg till ändringar">
     </form>
 
+
+
+    
     <script>
         async function toggleCompleted(taskId) {
             // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
@@ -96,6 +99,10 @@
                 editedCategoryInput.value = category;
             });
         });
+
+
+
+
     </script>
 </body>
 </html>

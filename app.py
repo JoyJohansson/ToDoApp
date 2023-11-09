@@ -197,16 +197,7 @@ def by_category(category_name):
 def page_not_found(e):
     return jsonify({"message": "Ogiltig url (Uppgiftid måste vara siffror)."}), 418
 
-
-
-
-
-
-
-
-
 #EXTRA TILLÄGG
-
 # Ta bort en task via frontend
 @app.route('/delete/<int:task_id>', methods=['GET'])
 def delete_task_by_id(task_id):
@@ -259,47 +250,31 @@ def toggle_complete_task(task_id):
 
     return jsonify({"message": "Task not found."}), 404
 
+# Edit en task via frontend
+@app.route('/edit', methods=['POST'])
+def edit_task():
+    task_id = int(request.form.get('task_id'))  # Retrieve task_id from the form data
 
-# Edit task via frontend
-@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
-def edit_task_by_id(task_id):
+    data = request.form
+    updated_description = data.get('editedDescription')
+    updated_category = data.get('editedCategory')
+    updated_status = data.get('status')
+
     tasks = get_tasks()
     task = find_task_by_id(task_id)
+
     if task:
-        if request.method == 'GET':
-            return render_template('edit_task.html', task=task)
-        elif request.method == 'POST':
-            data = request.form
-            task['description'] = data.get('description', task['description'])
-            task['category'] = data.get('category', task['category'])
-            task['status'] = data.get('status', task['status'])
-            save_tasks(tasks)
-            return redirect('/')
-    return jsonify({"message": "The task was not found."}), 404
+        task['description'] = updated_description
+        task['category'] = updated_category
+        task['status'] = updated_status
+        task.update(data)
+        task.append(tasks)
+        save_tasks(tasks)
 
-@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
-def edit_task(task_id):
-    if request.method == 'GET':
-        task = find_task_by_id(task_id)
-        if task:
-            return render_template('edit_task.html', task=task)
-        return jsonify({"message": "Uppgiften hittades inte."}), 404
-    elif request.method == 'POST':
-        data = request.form
-        updated_description = data.get('description')
-        updated_category = data.get('category')
-        updated_status = data.get('status')
-
-        tasks = get_tasks()
-        task = find_task_by_id(task_id)
-
-        if task:
-            task['description'] = updated_description
-            task['category'] = updated_category
-            task['status'] = updated_status
-            save_tasks(tasks)
-            return redirect('/')
-        return jsonify({"message": "Uppgiften hittades inte."}), 404
+        # Trigger a page reload
+        response = make_response(redirect('/'))
+        return response
+    return jsonify({"message": "Uppgiften hittades inte."}), 404
 
 @app.route('/toggleedit/<int:task_id>', methods=['POST'])
 def toggle_edit(task_id):
@@ -313,3 +288,7 @@ def toggle_edit(task_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+    
+    
+    
+    
