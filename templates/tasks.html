@@ -26,7 +26,7 @@
                 <td>
                     <a href="/delete/{{ task.id }}"><input type="submit" value="Delete"></a>
                     <a href="/complete/{{ task.id }}"><input type="submit" value="Complete" onclick="toggleCompleted({{ task.id }})"></a>
-                    <a href="/edit/{{ task.id }}"><input type="submit" value="Edit" onclic="toggleedit({{task.id}})"></a> <!-- Lägg till redigeringsknapp -->
+                    <a href="/edit/{{ task.id }}"><input type="button" value="Edit" onclick="toggleedit({{ task.id }})"></a>
                 </td>
             </tr>
         {% endfor %}
@@ -45,7 +45,9 @@
 
     <!-- Redigeringsformulär (initialt dolt) -->
     
-    <form action='/edit/<int:task_id>', methods="POST" style="display:none">
+   <!-- <form action='/edit/<int:task_id>', method="post" style="display:none">-->
+    <form action='/edit_task' method="post" style="display:none">
+        <input type="hidden" name="task_id" value="{{ task.id }}">
     <h2>Edit Task</h2>
         <label for="editedDescription">Task:</label>
         <input type="text" id="editedDescription" name="editedDescription" required>
@@ -55,10 +57,6 @@
         <br>
         <input type="submit" value="Lägg till ändringar">
     </form>
-
-
-
-    
     <script>
         async function toggleCompleted(taskId) {
             // Skicka en AJAX-förfrågan till servern för att markera uppgiften som "completed"
@@ -79,6 +77,7 @@
             }
         }
         
+        async function toggleedit(taskId) {
         // Visa redigeringsformuläret när "Edit" knappen klickas
         const editButtons = document.querySelectorAll("a[href^='/edit/']");
         editButtons.forEach(button => {
@@ -87,7 +86,9 @@
                 // Hämta task_ID från länken
                 const taskId = button.getAttribute("href").split('/').pop();
                 // Visa redigeringsformuläret
-                const editForm = document.querySelector("form[action^='/edit/']");
+                //const editForm = document.querySelector("form[action^='/edit/']");
+                // Hämta redigeringsformuläret med rätt task_id i action-attributet
+                const editForm = document.querySelector(`form[action^='/edit/${taskId}']`);
                 editForm.style.display = "block";
                 // Fyll i redigeringsformuläret med befintlig information (om sådan finns)
                 const taskRow = button.closest("tr");
@@ -97,12 +98,60 @@
                 const editedCategoryInput = editForm.querySelector("#editedCategory");
                 editedDescriptionInput.value = description;
                 editedCategoryInput.value = category;
-            });
+           
+
+                const editForm = document.getElementById("editForm");
+                editForm.addEventListener("submit", function (e) {
+                e.preventDefault(); // Prevent the form from actually submitting
+    
+                 // Get the edited description and category values
+                const editedDescription = editedDescriptionInput.value;
+                const editedCategory = editedCategoryInput.value;
+                const editedDescription = editedDescriptionInput.value;
+                const editedCategory = editedCategoryInput.value;
+    
+                // Here, you can perform any actions with the edited data, such as sending it to a server or updating it in your local application state.
+        
+                // For example, you can log the values to the console:
+                console.log("Edited Description:", editedDescription);
+                console.log("Edited Category:", editedCategory);
+
+                     fetch('/update-task', {
+                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                    taskId: taskId, // Include the task ID
+                    editedDescription: editedDescription,
+                    editedCategory: editedCategory,
+                }),
+            })
+                 .then(response => {
+                    if (response.ok) {
+                        // Handle success
+             } else {
+                // Handle errors
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
-
-
-
-
+    });
+    if (response.ok) {
+        // Handle success
+        // For example, you can update the UI to reflect the changes
+        const taskElement = document.getElementById(`task_${taskId}`);
+        taskElement.textContent = editedDescription; // Update the task description
+        // You can update other parts of the UI as needed
+    } else {
+        // Handle errors
+        // For example, you can display an error message to the user
+        const errorMessage = document.getElementById("errorMessage");
+        errorMessage.textContent = "An error occurred while updating the task.";
+    }
+});
+}
     </script>
 </body>
 </html>
