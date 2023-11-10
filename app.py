@@ -265,8 +265,6 @@ def edit_task(task_id):
     updated_category = data.get('editedCategory')
     updated_status = data.get('status')
 
-    
-    
     tasks = get_tasks()
 
     for task in tasks:
