@@ -250,8 +250,14 @@ def toggle_complete_task(task_id):
 
     return jsonify({"message": "Task not found."}), 404
 
+
+
+
+
+
+
 # Edit en task via frontend
-@app.route('/edit_task', methods=['POST'])
+@app.route('/edit/<int:task_id>', methods=['POST'])
 def edit_task(task_id):
     
     data = request.form
@@ -259,22 +265,18 @@ def edit_task(task_id):
     updated_category = data.get('editedCategory')
     updated_status = data.get('status')
 
+    
+    
     tasks = get_tasks()
-    task = find_task_by_id(task_id)
 
-    if task:
-        task['description'] = updated_description
-        task['category'] = updated_category
-        task['status'] = updated_status
-        task.update(data)
-        tasks.append(task)
-        save_tasks(tasks)
-
-        # Trigger a page reload
-        response = make_response(redirect('/'))
-        return response
-    return jsonify({"message": "Uppgiften hittades inte."}), 404
-
+    for task in tasks:
+        if task['id'] == task_id:
+            task['description'] = updated_description
+            task['category'] = updated_category
+            task['status'] = updated_status
+            save_tasks(tasks)
+            return redirect("/")
+    
 @app.route('/toggleedit/<int:task_id>', methods=['POST'])
 def toggle_edit(task_id):
     task = find_task_by_id(task_id)

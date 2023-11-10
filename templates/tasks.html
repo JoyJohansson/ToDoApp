@@ -45,7 +45,7 @@
 
     <!-- Redigeringsformulär (initialt dolt) -->
     
-    <form action='/edit/<int:task_id>', method="post" style="display:none">
+    <form action='/edit/', method="post" style="display:none">
     <h2>Edit Task</h2>
         <label for="editedDescription">Task:</label>
         <input type="text" id="editedDescription" name="editedDescription" required>
@@ -88,6 +88,7 @@
                 const taskId = button.getAttribute("href").split('/').pop();
                 // Visa redigeringsformuläret
                 const editForm = document.querySelector("form[action^='/edit/']");
+                editForm.action= "/edit/"+ taskId
                 editForm.style.display = "block";
                 // Fyll i redigeringsformuläret med befintlig information (om sådan finns)
                 const taskRow = button.closest("tr");
